@@ -5,14 +5,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 public class UserDao {
 	
 	private ConnectionMaker connectionMaker;
-	
-	public UserDao(ConnectionMaker connectionMaker) {
+
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
-
+	
+//	public UserDao(ConnectionMaker connectionMaker) {
+//		this.connectionMaker = connectionMaker;
+//	}
+	
+//	#1 DI injection (a.k.a DI receive)
+	public UserDao() {
+		DaoFactory daoFactory = new DaoFactory();
+		this.connectionMaker = daoFactory.connectionMaker();
+	}
+////	#2 DI search
+//	public UserDao() {
+//		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+//		this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
+//	}
+	
 	
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = connectionMaker.makeConnection();
